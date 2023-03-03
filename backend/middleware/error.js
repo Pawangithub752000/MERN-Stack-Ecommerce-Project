@@ -12,8 +12,8 @@ if(err.name === "CastError"){
 }
 
 // Mongooose duplicate key error
-if(err.code == 11000){
-    const message = `Duplicate ${object.keys(err.keyValue)} Entered`;
+if(err.code === 11000){
+    const message = `Duplicate ${Object.keys(err.keyValue)} Entered`;
     err = new ErrorHandler(message, 400);
 }
 

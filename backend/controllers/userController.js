@@ -135,3 +135,117 @@ const resetPasswordToken = crypto
 
  sendToken(user, 200, res);
 });
+
+//Get User Detail:- means ki aapne login kiya toh aap apne detail dekh shakte ho
+exports.getUserDetails = catchAsyncErrors(async(req,res,next)=>{
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      user,  
+    });
+});
+
+//Update User Password 
+exports.updatePassword = catchAsyncErrors(async(req,res,next)=>{
+    const user = await User.findById(req.user.id).select("+password");
+    
+    const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
+    if(!isPasswordMatched){
+        return next(new ErrorHander("old password is incorrect", 400));
+    }
+
+    if(req.body.newPassword !==req.body.confirmPassword){
+        return next(new ErrorHander("password does not match", 400));
+    }
+
+    user.password = req.body.newPassword;
+    
+    await user.save();
+    sendToken(user, 200, res);
+});
+//Update User Profile
+exports.updateProfile  = catchAsyncErrors(async(req,res,next)=>{
+    
+    const newUserData = {
+        name:req.body.name,
+        email:req.body.email,
+    }
+
+    // We will add cloudinary later
+    const user = await User.findByIdAndUpdate(req.user.id,newUserData, {
+        new: true,
+        runValidators: true,
+        userFindAndModify: false,
+    });
+
+    res.status(200).json({
+        success: true,
+    });
+});
+
+//Get all users
+exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
+    const users = await User.find();
+
+    res.status(200).json({
+        success: true,
+        users,
+    });
+});
+
+// Get single user(Admin):- Admin kisi other user ka details dekhna ke liye
+exports.getSingleUser= catchAsyncErrors(async (req, res, next) => {
+ const user = await User.findById(req.params.id);
+
+ if(!user){
+    return next(
+        new ErrorHander(`User does not exist with Id: ${req.params.id}`)
+        );
+ }
+
+ res.status(200).json({
+    success: true,
+    user,
+ });
+});
+
+//Update User Role-- Admin :-Means yadi admin kisi user ka role update karne ke liye
+exports.updateUserRole  = catchAsyncErrors(async(req,res,next)=>{
+    
+    const newUserData = {
+        name:req.body.name,
+        email:req.body.email,
+        role:req.body.role,
+        }
+
+    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+        new: true,
+        runValidators: true,
+        userFindAndModify: false,
+    });
+
+    res.status(200).json({
+        success: true,
+    });
+});
+
+
+//Delete User --Admin
+exports.deleteUser  = catchAsyncErrors(async(req,res,next)=>{
+const user = await User.findById(req.params.id);
+
+// We will remove cloudinary later
+if(!user){
+    return next(
+        new ErrorHander(`User does not exist with Id: ${req.params.id}`, 400)
+    );
+}
+
+await user.remove();
+
+    res.status(200).json({
+        success: true,
+        message:"User Deleted Successfully",
+    });
+});
