@@ -44,13 +44,13 @@ exports.getProductDetails = catchAsyncErrors(async(req,res,next) => {
     const product = await Product.findById(req.params.id);
 
     if(!product){
-        return next(new ErrorHandler("Product not found", 404));
+        return next(new ErrorHander("Product not found", 404));
     }
 
      res.status(200).json({
         success:true,
         product,
-        productCount, 
+
     });
     
 });
@@ -88,7 +88,7 @@ exports.updateProduct = catchAsyncErrors(async(req, res, next) => {
 
        res.status(200).json({
         success:true,
-        message:"Prduct Delete Successfully"
+        message:"Product Delete Successfully"
        });
     });
 

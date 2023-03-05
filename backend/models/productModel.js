@@ -3,15 +3,15 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
     name:{
         type:String,
-        required:[true, "Please Enter product name"]
+        required:[false, "Please Enter product name"]
     },
     description:{
         type:String,
-        required:[true, "Please Enter product Description"]
+        required:[false, "Please Enter product Description"]
     },
     price:{
         type:Number,
-        required:[true,"please Enter product price"],
+        required:[false,"please Enter product price"],
         maxLength:[8, "Price cannot exceed 8 characters"]
     },
     ratings:{
@@ -22,21 +22,21 @@ const productSchema = new mongoose.Schema({
         {
             public_id:{
                 type:String,
-                required:true 
+                required:false
             },
             url:{
                 type:String,
-                required:true 
+                required:false
             }
         }
     ],
     category:{
       type:String,
-      required:[true,"please Enter Product Category"],   
+      required:[false,"please Enter Product Category"],   
     },
     Stock:{
         type:Number,
-        required:[true,"please Enter product Stock"],
+        required:[false,"please Enter product Stock"],
         maxLength:[4,"Stock cannot exceed 4 characters"],
         default:1
     },
@@ -49,19 +49,19 @@ const productSchema = new mongoose.Schema({
             user:{
                 type: mongoose.Schema.ObjectId,
                 ref: "User",
-                required: true,
+                required: false,
                 },
             name:{
                 type:String,
-                required:true,
+                required:false,
             },
             rating:{
                 type:Number,
-                required:true,
+                required:false,
             },
             comment:{
                 type:String,
-                required:true
+                required:false
             },
         }
     ],
